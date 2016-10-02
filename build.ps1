@@ -1,21 +1,85 @@
 [cmdletbinding()]
 param(
-    [bool]$Core = $false
+    [switch]$Force,
+    [switch]$SkipAtlas,
+
+    [Parameter(Mandatory=$true)]
+    [ValidateNotNull()]
+    [ValidateNotNullOrEmpty()]
+    [ValidateSet("Win2012R2Core", "Win2012R2", "Win10", "Win2016StdCore","Win2016Std")]
+    $OSName
 )
 
-if ($Core)
+switch ($OSName)
 {
-  & packer.exe build -var 'core=Core' .\01-win2012r2-standard-base.json
-  & packer.exe build -var 'source_path=.\output-win2012r2core-base\win2012r2core-base.ovf' -var 'core=Core' .\02-win2012r2-standard-win_updates-wmf5.json
-  & packer.exe build -var 'source_path=.\output-win2012r2Core-updates_wmf5\win2012r2Core-updates_wmf5.ovf' -var 'core=Core' .\03-win2012r2-standard-virtualbox-client.json
-  & packer.exe build -var 'source_path=.\output-win2012r2Core-vbox-client\win2012r2Core-vbox-client.ovf' -var 'core=Core' .\04-win2012r2-standard-cleanup.json
-  & packer.exe build -var 'source_path=.\output-win2012r2Core-cleanup\win2012r2Core-cleanup.ovf' -var 'version=0.0.2' -var 'core=Core' .\05-win2012r2-standard-final.json
+    'Win2012R2Core' { 
+        $osData = @{
+            os_name = 'win2012r2core' 
+            guest_os_type = 'Windows2012_64'
+            full_os_name = 'Windows2012R2Core'
+            iso_checksum = '849734f37346385dac2c101e4aacba4626bb141c'
+            iso_url = 'http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO'
+        }
+    }
+
+    'Win2012R2' { 
+        $osData = @{
+            os_name = 'win2012r2' 
+            guest_os_type = 'Windows2012_64'
+            full_os_name = 'Windows2012R2'
+            iso_checksum = '849734f37346385dac2c101e4aacba4626bb141c'
+            iso_url = 'http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO'
+        }
+    }
+
+    'Win2016StdCore' { 
+        $osData = @{
+            os_name = 'win2016stdcore' 
+            guest_os_type = 'Windows2012_64'
+            full_os_name = 'Windows2016StdCore'
+            iso_checksum = '3bb1c60417e9aeb3f4ce0eb02189c0c84a1c6691'
+            iso_url = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
+        }
+    }
+
+    'Win2016Std' { 
+        $osData = @{
+            os_name = 'win2016std' 
+            guest_os_type = 'Windows2012_64'
+            full_os_name = 'Windows2016'
+            iso_checksum = '3bb1c60417e9aeb3f4ce0eb02189c0c84a1c6691'
+            iso_url = 'http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO'
+        }
+    }
+
+    'Win10' { 
+        $osData = @{
+            os_name = 'win10' 
+            guest_os_type = 'Windows10_64'
+            full_os_name = 'Windows10'
+            iso_checksum = '56ab095075be28a90bc0b510835280975c6bb2ce'
+            iso_url = 'http://care.dlservice.microsoft.com/dl/download/C/3/9/C399EEA8-135D-4207-92C9-6AAB3259F6EF/10240.16384.150709-1700.TH1_CLIENTENTERPRISEEVAL_OEMRET_X64FRE_EN-US.ISO'
+        }
+    }
 }
-else
+
+Write-Output $osData | ConvertTo-Json
+ 
+  
+# Creates base image
+& packer.exe build $ForceTxt -var "os_name=$($osData.os_name)" -var "iso_checksum=$($osData.iso_checksum)" -var "iso_url=$($osData.iso_url)" -var "guest_os_type=$($osData.guest_os_type)" .\01-windows-base.json
+# Installs Windows Updates and WMF5
+& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-base\$($osData.os_name)-base.ovf" -var "os_name=$($osData.os_name)" .\02-win_updates-wmf5.json
+# Installs Vbox Client
+& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-updates_wmf5\$($osData.os_name)-updates_wmf5.ovf" -var "os_name=$($osData.os_name)" .\03-virtualbox-client.json
+# Clean Disk and Defrag
+& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-vbox-client\$($osData.os_name)-vbox-client.ovf" -var "os_name=$($osData.os_name)" .\04-cleanup.json
+# Create Vagrant Image
+& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" .\05-package-vagrant.json
+
+if (-not($SkipAtlas))
 {
-  & packer.exe build .\01-win2012r2-standard-base.json
-  & packer.exe build -var 'source_path=.\output-win2012r2-base\win2012r2-base.ovf' .\02-win2012r2-standard-win_updates-wmf5.json
-  & packer.exe build -var 'source_path=.\output-win2012r2-updates_wmf5\win2012r2-updates_wmf5.ovf' .\03-win2012r2-standard-virtualbox-client.json
-  & packer.exe build -var 'source_path=.\output-win2012r2-vbox-client\win2012r2-vbox-client.ovf' .\04-win2012r2-standard-cleanup.json
-  & packer.exe build -var 'source_path=.\output-win2012r2-cleanup\win2012r2-cleanup.ovf' -var 'version=0.0.2' .\05-win2012r2-standard-final.json
+    # Upload Image to Atlas
+    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" -var 'version=0.0.1' -var "full_os_name=$($osData.full_os_name)" .\06-atlas_upload.json
 }
+

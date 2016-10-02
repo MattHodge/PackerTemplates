@@ -27,7 +27,7 @@
 							<Letter>C</Letter>
 							<Order>1</Order>
 							<PartitionID>1</PartitionID>
-							<Label>Windows 10</Label>
+							<Label>SYSTEM</Label>
 						</ModifyPartition>
 					</ModifyPartitions>
 					<DiskID>0</DiskID>

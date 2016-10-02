@@ -8,7 +8,7 @@
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
       ],
       "source_path": "{{user `source_path`}}",
-      "guest_additions_mode": "{{ user `guest_additions_mode` }}",
+      "guest_additions_mode": "attach",
       "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
       "headless": "{{ user `headless` }}",
       "communicator": "winrm",
@@ -17,8 +17,8 @@
       "winrm_timeout": "12h",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "shutdown_timeout": "1h",
-      "output_directory": "./output-win2012r2{{user `core`}}-vbox-client/",
-      "vm_name": "win2012r2{{user `core`}}-vbox-client",
+      "output_directory": "./output-{{ user `os_name` }}-{{ user `image_name` }}/",
+      "vm_name": "{{ user `os_name` }}-{{ user `image_name` }}",
       "floppy_files": [
         "floppy/oracle.cer"
       ]
@@ -33,9 +33,9 @@
     }
   ],
   "variables": {
-    "core": "",
-    "guest_additions_mode": "upload",
+    "os_name": "",
     "headless": "true",
-    "source_path": ""
+    "source_path": "",
+    "image_name": "vbox-client"
   }
 }

@@ -54,13 +54,6 @@ $unattendedXML = @"
                     </LocalAccount>
                 </LocalAccounts>
             </UserAccounts>
-            <LogonCommands>
-                <AsynchronousCommand wcm:action="add">
-                    <CommandLine>powershell -NoLogo -ExecutionPolicy RemoteSigned -File C:\Windows\Temp\UpdateAndSysprep.ps1</CommandLine>
-                    <Description>Installs Windows updates rebooting as many times as needed and executes Sysprep</Description>
-                    <Order>1</Order>
-                </AsynchronousCommand>
-            </LogonCommands>
         </component>
     </settings>
     <settings pass="specialize">
@@ -77,5 +70,5 @@ $setupComplete = @"
 netsh advfirewall firewall set rule name="WinRM-HTTP" new action=allow
 "@
 
-New-Item -Path 'C:\Windows\setup\scripts' -ItemType Directory -Force
-Set-Content -path "C:\Windows\setup\scripts\SetupComplete.cmd" -Value $setupComplete
+New-Item -Path 'C:\Windows\Setup\Scripts' -ItemType Directory -Force
+Set-Content -path "C:\Windows\Setup\Scripts\SetupComplete.cmd" -Value $setupComplete

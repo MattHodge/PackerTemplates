@@ -1,0 +1,53 @@
+{
+  "variables": {
+    "headless": "true",
+    "image_name": "cleanup",
+    "os_name": "",
+    "source_path": ""
+  },
+  "builders": [
+    {
+      "communicator": "winrm",
+      "guest_additions_mode": "disable",
+      "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
+      "headless": "{{ user `headless` }}",
+      "output_directory": "./output-{{ user `os_name` }}-{{ user `image_name` }}/",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "1h",
+      "source_path": "{{user `source_path`}}",
+      "type": "virtualbox-ovf",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "48"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "vm_name": "{{ user `os_name` }}-{{ user `image_name` }}",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "winrm_username": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "elevated_password": "vagrant",
+      "elevated_user": "vagrant",
+      "script": "scripts/clean_and_scrub.ps1",
+      "type": "powershell"
+    }
+  ]
+}

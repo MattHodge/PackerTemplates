@@ -1,0 +1,65 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "48"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "source_path": "{{user `source_path`}}",
+      "headless": "{{ user `headless` }}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "shutdown_command": "C:/Windows/packer/PackerShutdown.bat",
+      "shutdown_timeout": "1h",
+      "output_directory": "./output-{{user `os_name`}}-{{user `image_name`}}/",
+      "vm_name": "{{user `os_name`}}-{{user `image_name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "scripts/save_shutdown_command.ps1"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "atlas",
+        "artifact": "MattHodge/{{user `full_os_name`}}-WMF5-NOCM",
+        "artifact_type": "vagrant.box",
+        "metadata": {
+          "provider": "virtualbox",
+          "version": "{{user `version`}}"
+        }
+      }
+    ]
+  ],
+  "variables": {
+    "guest_additions_mode": "disable",
+    "headless": "true",
+    "os_name": "",
+    "source_path": "",
+    "version": "",
+    "full_os_name": "",
+    "image_name": "atlas-upload"
+  }
+}

@@ -3,9 +3,24 @@
     {
       "type": "virtualbox-ovf",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
-        [ "modifyvm", "{{.Name}}", "--vram", "48" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "48"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
       ],
       "source_path": "{{user `source_path`}}",
       "headless": "{{ user `headless` }}",
@@ -15,8 +30,9 @@
       "winrm_timeout": "12h",
       "shutdown_command": "C:/Windows/packer/PackerShutdown.bat",
       "shutdown_timeout": "1h",
-      "output_directory": "./output-win2012r2{{user `core`}}-final/",
-      "vm_name": "win2012r2{{user `core`}}-final"
+      "output_directory": "S:/Scratch/output-{{user `os_name`}}-{{user `image_name`}}/",
+      "vm_name": "{{user `os_name`}}-{{user `image_name`}}",
+      "guest_additions_mode": "disable"
     }
   ],
   "provisioners": [
@@ -26,27 +42,20 @@
     }
   ],
   "post-processors": [
-      [{
-        "type": "vagrant",
-        "keep_input_artifact": true,
-        "output": "windows2012r2{{user `core`}}-wmf5-nocm-{{.Provider}}.box",
-        "vagrantfile_template": "vagrantfile-windows.template"
-      },
+    [
       {
-        "type": "atlas",
-        "artifact": "MattHodge/Windows2012R2{{user `core`}}-WMF5-NOCM",
-        "artifact_type": "vagrant.box",
-        "metadata": {
-          "provider": "virtualbox",
-          "version": "{{user `version`}}"
-        }
+        "type": "vagrant",
+        "keep_input_artifact": false,
+        "output": "{{user `os_name`}}-wmf5-nocm-{{.Provider}}.box",
+        "vagrantfile_template": "vagrantfile-windows.template"
       }
-    ]],
+    ]
+  ],
   "variables": {
     "guest_additions_mode": "disable",
     "headless": "true",
-    "core": "",
+    "os_name": "",
     "source_path": "",
-    "version": ""
+    "image_name": "pkg-vagrant"
   }
 }

@@ -8,10 +8,10 @@
         [ "modifyvm", "{{.Name}}", "--vram", "48" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
       ],
-      "guest_additions_mode": "{{ user `guest_additions_mode` }}",
-      "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
-      "output_directory": "./output-win10-base/",
-      "guest_os_type": "Windows10_64",
+      "output_directory": "./output-{{ user `os_name` }}-base/",
+      "vm_name": "{{ user `os_name` }}-base",
+      "guest_additions_mode": "disable",
+      "guest_os_type": "{{ user `guest_os_type` }}",
       "headless": "{{ user `headless` }}",
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
@@ -23,17 +23,16 @@
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "shutdown_timeout": "1h",
       "floppy_files": [
-        "answer_files/win10{{user `core`}}/Autounattend.xml",
-        "floppy/SetupComplete-2012.cmd",
+        "answer_files/{{ user `os_name` }}/Autounattend.xml",
         "floppy/winrm.ps1"
       ]
     }
   ],
   "variables": {
-    "core": "",
-    "guest_additions_mode": "disable",
+    "os_name": "",
     "headless": "true",
-    "iso_checksum": "f9ffea3a40bf39ccde105bb064e153343560d73e",
-    "iso_url": "S:\\Win10\\en_windows_10_enterprise_version_1607_updated_jul_2016_x64_dvd_9054264.iso"
+    "iso_checksum": "",
+    "iso_url": "",
+    "guest_os_type": ""
   }
 }

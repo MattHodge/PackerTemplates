@@ -3,13 +3,26 @@
     {
       "type": "virtualbox-ovf",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
-        [ "modifyvm", "{{.Name}}", "--vram", "48" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "4096"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "48"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
       ],
       "source_path": "{{user `source_path`}}",
-      "guest_additions_mode": "{{ user `guest_additions_mode` }}",
-      "guest_additions_path": "C:/users/vagrant/VBoxGuestAdditions.iso",
       "headless": "{{ user `headless` }}",
       "communicator": "winrm",
       "winrm_username": "vagrant",
@@ -17,8 +30,9 @@
       "winrm_timeout": "12h",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "shutdown_timeout": "1h",
-      "output_directory": "./output-win2012r2{{user `core`}}-updates_wmf5/",
-      "vm_name": "win2012r2{{user `core`}}-updates_wmf5"
+      "output_directory": "./output-{{user `os_name`}}-{{ user `image_name`}}/",
+      "vm_name": "{{user `os_name`}}-{{ user `image_name`}}",
+      "guest_additions_mode": "disable"
     }
   ],
   "provisioners": [
@@ -137,9 +151,9 @@
     }
   ],
   "variables": {
-    "core": "",
-    "guest_additions_mode": "disable",
+    "os_name": "",
     "headless": "true",
-    "source_path": ""
+    "source_path": "",
+    "image_name": "updates_wmf5"
   }
 }
