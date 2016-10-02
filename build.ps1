@@ -2,7 +2,7 @@
 param(
     [switch]$Force,
     [switch]$SkipAtlas,
-
+    [switch]$SkipVboxTools,
     [Parameter(Mandatory=$true)]
     [ValidateNotNull()]
     [ValidateNotNullOrEmpty()]
@@ -63,26 +63,44 @@ switch ($OSName)
     }
 }
 
+if($SkipVboxTools)
+{
+    $osData.VboxCmd = "-var `"install_vbox_tools=false`""
+}
+else
+{
+    $osData.VboxCmd = "-var `"install_vbox_tools=true`""
+}
+
+if ($Force)
+{
+    $osData.ForceCmd = '-force'
+}
+else
+{
+    $osData.ForceCmd = ''
+}
+
 Write-Output $osData | ConvertTo-Json
  
-  
+
+Start-Process -FilePath 'packer.exe' -ArgumentList "build $($osData.ForceCmd) -var `"os_name=$($osData.os_name)`" -var `"iso_checksum=$($osData.iso_checksum)`" -var `"iso_url=$($osData.iso_url)`" -var `"guest_os_type=$($osData.guest_os_type)`" $($osData.VboxCmd) .\01-windows-base.json" -Wait -NoNewWindow
+
 # Creates base image
 & packer.exe build $ForceTxt -var "os_name=$($osData.os_name)" -var "iso_checksum=$($osData.iso_checksum)" -var "iso_url=$($osData.iso_url)" -var "guest_os_type=$($osData.guest_os_type)" .\01-windows-base.json
 # Installs Windows Updates and WMF5
 & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-base\$($osData.os_name)-base.ovf" -var "os_name=$($osData.os_name)" .\02-win_updates-wmf5.json
-# Installs Vbox Client
-& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-updates_wmf5\$($osData.os_name)-updates_wmf5.ovf" -var "os_name=$($osData.os_name)" .\03-virtualbox-client.json
 # Clean Disk and Defrag
-& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-vbox-client\$($osData.os_name)-vbox-client.ovf" -var "os_name=$($osData.os_name)" .\04-cleanup.json
+& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-updates_wmf5\$($osData.os_name)-updates_wmf5.ovf" -var "os_name=$($osData.os_name)" .\03-cleanup.json
 
 if ($SkipAtlas)
 {
     # Create Vagrant Image
-    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" .\05-package-vagrant.json
+    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" .\04-package-vagrant.json
 }
 else
 {
     # Upload Image to Atlas
-    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" -var "full_os_name=$($osData.full_os_name)" .\06-atlas_upload.json
+    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" -var "full_os_name=$($osData.full_os_name)" .\05-atlas_upload.json
 }
 

@@ -3,14 +3,13 @@
     {
       "type": "virtualbox-iso",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--natpf1", "guest_winrm,tcp,,55985,,5985" ],
         [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
         [ "modifyvm", "{{.Name}}", "--vram", "48" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
       ],
       "output_directory": "./output-{{ user `os_name` }}-base/",
       "vm_name": "{{ user `os_name` }}-base",
-      "guest_additions_mode": "disable",
+      "guest_additions_mode": "attach",
       "guest_os_type": "{{ user `guest_os_type` }}",
       "headless": "{{ user `headless` }}",
       "iso_url": "{{ user `iso_url` }}",
@@ -28,11 +27,21 @@
       ]
     }
   ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "scripts/install_oracle_guest_additions.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "environment_vars": [ "install_vbox_tools={{user `install_vbox_tools`}}" ]
+    }
+  ],
   "variables": {
     "os_name": "",
     "headless": "true",
     "iso_checksum": "",
     "iso_url": "",
-    "guest_os_type": ""
+    "guest_os_type": "",
+    "install_vbox_tools": ""
   }
 }
