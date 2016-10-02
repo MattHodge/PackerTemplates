@@ -74,12 +74,15 @@ Write-Output $osData | ConvertTo-Json
 & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-updates_wmf5\$($osData.os_name)-updates_wmf5.ovf" -var "os_name=$($osData.os_name)" .\03-virtualbox-client.json
 # Clean Disk and Defrag
 & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-vbox-client\$($osData.os_name)-vbox-client.ovf" -var "os_name=$($osData.os_name)" .\04-cleanup.json
-# Create Vagrant Image
-& packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" .\05-package-vagrant.json
 
-if (-not($SkipAtlas))
+if ($SkipAtlas)
+{
+    # Create Vagrant Image
+    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" .\05-package-vagrant.json
+}
+else
 {
     # Upload Image to Atlas
-    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" -var 'version=0.0.1' -var "full_os_name=$($osData.full_os_name)" .\06-atlas_upload.json
+    & packer.exe build $ForceTxt -var "source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf" -var "os_name=$($osData.os_name)" -var "full_os_name=$($osData.full_os_name)" .\06-atlas_upload.json
 }
 

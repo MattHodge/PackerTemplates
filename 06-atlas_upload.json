@@ -42,6 +42,13 @@
     }
   ],
   "post-processors": [
+    [
+      {
+        "type": "vagrant",
+        "keep_input_artifact": false,
+        "output": "{{user `os_name`}}-wmf5-nocm-{{.Provider}}.box",
+        "vagrantfile_template": "vagrantfile-windows.template"
+      },
       {
         "type": "atlas",
         "artifact": "MattHodge/{{user `full_os_name`}}-WMF5-NOCM",
@@ -50,6 +57,7 @@
           "provider": "virtualbox"
         }
       }
+    ]
   ],
   "variables": {
     "headless": "true",
