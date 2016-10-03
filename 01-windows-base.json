@@ -3,9 +3,38 @@
     {
       "type": "virtualbox-iso",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
-        [ "modifyvm", "{{.Name}}", "--vram", "48" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "48"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "vboxmanage_post": [
+        [
+          "storageattach",
+          "{{.Name}}",
+          "--storagectl",
+          "IDE Controller",
+          "--port",
+          "1",
+          "--device",
+          "0",
+          "--medium",
+          "none"
+        ]
       ],
       "output_directory": "./output-{{ user `os_name` }}-base/",
       "vm_name": "{{ user `os_name` }}-base",
@@ -33,7 +62,9 @@
       "script": "scripts/install_oracle_guest_additions.ps1",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
-      "environment_vars": [ "install_vbox_tools={{user `install_vbox_tools`}}" ]
+      "environment_vars": [
+        "install_vbox_tools={{user `install_vbox_tools`}}"
+      ]
     }
   ],
   "variables": {

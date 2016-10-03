@@ -38,78 +38,8 @@
   "provisioners": [
     {
       "type": "powershell",
-      "script": "scripts/install_windows_updates.ps1",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1,
-        2,
-        3,
-        5,
-        10,
-        15
-      ]
-    },
-    {
-      "type": "powershell",
-      "script": "scripts/install_windows_updates.ps1",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1,
-        2,
-        3,
-        5,
-        10,
-        15
-      ]
-    },
-    {
-      "type": "windows-restart",
-      "restart_timeout": "1h"
-    },
-    {
-      "type": "powershell",
-      "script": "scripts/install_windows_updates.ps1",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1,
-        2,
-        3,
-        5,
-        10,
-        15
-      ]
-    },
-    {
-      "type": "windows-restart",
-      "restart_timeout": "1h"
-    },
-    {
-      "type": "powershell",
-      "script": "scripts/install_windows_updates.ps1",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        2,
-        3,
-        5,
-        10,
-        15
-      ]
-    },
-    {
-      "type": "windows-restart",
-      "restart_timeout": "1h"
-    },
-    {
-      "type": "powershell",
       "inline": [
+        "$env:chocolateyUseWindowsCompression = 'false'",
         "iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex"
       ],
       "elevated_user": "vagrant",
@@ -117,9 +47,64 @@
     },
     {
       "type": "powershell",
-      "inline": [
-        "choco install powershell -y"
-      ],
+      "script": "scripts/install_windows_updates.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        10,
+        15
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "1h"
+    },
+    {
+      "type": "powershell",
+      "script": "scripts/install_windows_updates.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        10,
+        15
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "1h"
+    },
+    {
+      "type": "powershell",
+      "script": "scripts/install_windows_updates.ps1",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        10,
+        15
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "1h"
+    },
+    {
+      "type": "powershell",
+      "script": "scripts/install_ps5.ps1",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
       "valid_exit_codes": [

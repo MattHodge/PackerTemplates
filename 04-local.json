@@ -30,7 +30,7 @@
       "winrm_timeout": "12h",
       "shutdown_command": "C:/Windows/packer/PackerShutdown.bat",
       "shutdown_timeout": "1h",
-      "output_directory": "S:/Scratch/output-{{user `os_name`}}-{{user `image_name`}}/",
+      "output_directory": "./output-{{user `os_name`}}-{{user `image_name`}}/",
       "vm_name": "{{user `os_name`}}-{{user `image_name`}}",
       "guest_additions_mode": "disable"
     }
@@ -52,7 +52,6 @@
     ]
   ],
   "variables": {
-    "guest_additions_mode": "disable",
     "headless": "true",
     "os_name": "",
     "source_path": "",
