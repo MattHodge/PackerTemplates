@@ -100,6 +100,6 @@ if ($SkipAtlas)
 else
 {
     # Vagrant + Atlas
-    Start-Process -FilePath 'packer.exe' -ArgumentList "build $($osData.ForceCmd) -var `"os_name=$($osData.os_name)`" -var `"source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf` -var `"full_os_name=$($osData.full_os_name)`" .\04-atlas.json" -Wait -NoNewWindow
+    Start-Process -FilePath 'packer.exe' -ArgumentList "build $($osData.ForceCmd) -var `"os_name=$($osData.os_name)`" -var `"source_path=.\output-$($osData.os_name)-cleanup\$($osData.os_name)-cleanup.ovf`" -var `"full_os_name=$($osData.full_os_name)`" .\04-atlas.json" -Wait -NoNewWindow
 }
 
