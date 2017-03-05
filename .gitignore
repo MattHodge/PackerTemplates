@@ -1,3 +1,6 @@
 output-*/*
 packer_cache/
 *.box
+tools/*
+packages/*
+.fake/*

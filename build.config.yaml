@@ -1,0 +1,26 @@
+---
+- Name: Win2012R2Core
+  osName: win2012r2core
+  guestOSType: Windows2012_64
+  isoURL: http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO
+  isoChecksum: 849734f37346385dac2c101e4aacba4626bb141c
+- Name: Windows2012R2
+  osName: win2012r2
+  guestOSType: Windows2012_64
+  isoChecksum: 849734f37346385dac2c101e4aacba4626bb141c
+  isoURL: http://care.dlservice.microsoft.com/dl/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO
+- Name: Windows2016StdCore
+  osName: win2016stdcore
+  guestOSType: Windows2012_64
+  isoChecksum: 3bb1c60417e9aeb3f4ce0eb02189c0c84a1c6691
+  isoURL: http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO
+- Name: Windows2016Std
+  osName: win2016std
+  guestOSType: Windows2012_64
+  isoChecksum: 3bb1c60417e9aeb3f4ce0eb02189c0c84a1c6691
+  isoURL: http://care.dlservice.microsoft.com/dl/download/1/6/F/16FA20E6-4662-482A-920B-1A45CF5AAE3C/14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO
+- Name: Windows10
+  osName: win10
+  guestOSType: Windows10_64
+  isoChecksum: 56ab095075be28a90bc0b510835280975c6bb2ce
+  isoURL: http://care.dlservice.microsoft.com/dl/download/C/3/9/C399EEA8-135D-4207-92C9-6AAB3259F6EF/10240.16384.150709-1700.TH1_CLIENTENTERPRISEEVAL_OEMRET_X64FRE_EN-US.ISO
