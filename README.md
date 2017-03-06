@@ -115,7 +115,7 @@ The following commands will build you VirtualBox Images
 export ATLAS_TOKEN="123-MYATLAS-APIKEY"
 
 # Builds Windows 2012 R2 Core and runs the Atlas post processor.
-./build.sh --target "virtualbox-atlas" -os="Win2012R2Core" -atlas_username="MattHodge" --atlas_version="1.0.0"
+./build.sh --target "virtualbox-atlas" -os="Win2012R2Core" --atlas_username="MattHodge" --atlas_version="1.0.0"
 ```
 
 ## Using the Vagrant Images
