@@ -1,0 +1,169 @@
+{
+    "builders": [
+        {
+            "type": "hyperv-iso",
+            "output_directory": "./output-{{ user `os_name` }}-base-hyperv/",
+            "vm_name": "{{ user `os_name` }}-base",
+            "iso_url": "{{ user `iso_url` }}",
+            "iso_checksum": "{{ user `iso_checksum` }}",
+            "iso_checksum_type": "sha1",
+            "communicator": "winrm",
+            "winrm_username": "vagrant",
+            "winrm_password": "vagrant",
+            "winrm_timeout": "12h",
+            "shutdown_command": "C:/Windows/packer/PackerShutdown.bat",
+            "shutdown_timeout": "1h",
+            "floppy_files": [
+                "answer_files/{{ user `os_name` }}/Autounattend.xml",
+                "floppy/winrm.ps1"
+            ],
+            "cpu": 1,
+            "disk_size": 81920,
+            "ram_size": 1024,
+            "generation": 1,
+            "boot_wait": "0s",
+            "boot_command": [
+                "a<wait>a<wait>a"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "inline": [
+                "$env:chocolateyUseWindowsCompression = 'false'",
+                "iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex"
+            ],
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_ps5.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                3010
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "elevated_password": "vagrant",
+            "elevated_user": "vagrant",
+            "script": "scripts/clean_and_scrub.ps1",
+            "type": "powershell"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/save_shutdown_command.ps1"
+        }
+    ],
+    "post-processors": [
+        [
+            {
+                "type": "vagrant",
+                "keep_input_artifact": false,
+                "output": "{{user `os_name`}}-wmf5-nocm-{{.Provider}}.box",
+                "vagrantfile_template": "vagrantfile-windows.template"
+            },
+            {
+                "type": "atlas",
+                "artifact": "{{user `atlas_username`}}/{{user `full_os_name`}}-WMF5-NOCM",
+                "artifact_type": "vagrant.box",
+                "metadata": {
+                    "provider": "hyperv",
+                    "version": "{{user `atlas_version`}}"
+                }
+            }
+        ]
+    ],
+    "variables": {
+        "atlas_username": "",
+        "atlas_version": "",
+        "guest_os_type": "",
+        "image_name": "atlas-upload",
+        "install_vbox_tools": "",
+        "iso_checksum": "",
+        "iso_url": "",
+        "os_name": ""
+    }
+}

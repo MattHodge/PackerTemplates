@@ -24,7 +24,7 @@ fi
 
 # Define default arguments.
 SCRIPT="build.cake"
-TARGET="Local"
+TARGET="virtualbox-local"
 CONFIGURATION="Release"
 VERBOSITY="verbose"
 DRYRUN=

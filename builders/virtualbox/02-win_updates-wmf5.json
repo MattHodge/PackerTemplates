@@ -1,0 +1,144 @@
+{
+    "builders": [
+        {
+            "type": "virtualbox-ovf",
+            "vboxmanage": [
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--memory",
+                    "4096"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--vram",
+                    "48"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--cpus",
+                    "2"
+                ]
+            ],
+            "source_path": "{{user `source_path`}}",
+            "headless": "{{ user `headless` }}",
+            "communicator": "winrm",
+            "winrm_username": "vagrant",
+            "winrm_password": "vagrant",
+            "winrm_timeout": "12h",
+            "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+            "shutdown_timeout": "1h",
+            "output_directory": "./output-{{user `os_name`}}-{{ user `image_name`}}/",
+            "vm_name": "{{user `os_name`}}-{{ user `image_name`}}",
+            "guest_additions_mode": "disable"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "inline": [
+                "$env:chocolateyUseWindowsCompression = 'false'",
+                "iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex"
+            ],
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_ps5.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                3010
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        }
+    ],
+    "variables": {
+        "os_name": "",
+        "headless": "true",
+        "source_path": "",
+        "image_name": "updates_wmf5"
+    }
+}

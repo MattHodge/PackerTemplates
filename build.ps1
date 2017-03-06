@@ -1,3 +1,6 @@
+#Requires -RunAsAdministrator
+# This is so it can interact with Hyper-V
+
 ##########################################################################
 # This is the Cake bootstrapper script for PowerShell.
 # This file was downloaded from https://github.com/cake-build/resources
@@ -41,7 +44,7 @@ http://cakebuild.net
 [CmdletBinding()]
 Param(
     [string]$Script = "build.cake",
-    [string]$Target = "Default",
+    [string]$Target = "virtualbox-local",
     [ValidateSet("Release", "Debug")]
     [string]$Configuration = "Release",
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
@@ -181,6 +184,27 @@ if(-Not $SkipToolPackageRestore.IsPresent) {
 # Make sure that Cake has been installed.
 if (!(Test-Path $CAKE_EXE)) {
     Throw "Could not find Cake.exe at $CAKE_EXE"
+}
+
+if ($Target -like 'hyperv*')
+{
+    # check if hyper-v installed
+    $hyperv = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
+
+    # Check if Hyper-V is already enabled.
+    if($hyperv.State -ne "Enabled")
+    {
+        throw "You need to install and enable Hyper-V to run the Hyper-V Builder."
+    }
+
+    if (Get-VMSwitch -SwitchType External)
+    {
+        Write-Verbose "An external Hyper-V switch exists"
+    }
+    else
+    {
+        throw "You need to create an External Hyper-V switch so that Windows updates can be installed at build time."
+    }
 }
 
 # Start Cake
