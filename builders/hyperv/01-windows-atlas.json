@@ -133,6 +133,12 @@
             "type": "powershell"
         },
         {
+            "elevated_password": "vagrant",
+            "elevated_user": "vagrant",
+            "script": "scripts/run_ngen.ps1",
+            "type": "powershell"
+        },
+        {
             "type": "powershell",
             "script": "scripts/save_shutdown_command.ps1"
         }

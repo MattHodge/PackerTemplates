@@ -48,6 +48,12 @@
             "elevated_user": "vagrant",
             "script": "scripts/clean_and_scrub.ps1",
             "type": "powershell"
+        },
+        {
+            "elevated_password": "vagrant",
+            "elevated_user": "vagrant",
+            "script": "scripts/run_ngen.ps1",
+            "type": "powershell"
         }
     ]
 }
