@@ -1,4 +1,5 @@
 #addin "Cake.Yaml"
+#addin "YamlDotNet"
 #addin "Newtonsoft.Json"
 var target = Argument("target", "virtualbox-local");
 var os = Argument("os","Windows2016StdCore");
