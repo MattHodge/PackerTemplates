@@ -163,9 +163,6 @@
         "atlas_token": "{{env `ATLAS_TOKEN`}}",
         "atlas_username": "",
         "atlas_version": "",
-        "guest_os_type": "",
-        "image_name": "atlas-upload",
-        "install_vbox_tools": "",
         "iso_checksum": "",
         "iso_url": "",
         "os_name": ""

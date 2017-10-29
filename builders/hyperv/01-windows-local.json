@@ -156,8 +156,6 @@
     "variables": {
         "os_name": "",
         "iso_checksum": "",
-        "iso_url": "",
-        "guest_os_type": "",
-        "install_vbox_tools": ""
+        "iso_url": ""
     }
 }
