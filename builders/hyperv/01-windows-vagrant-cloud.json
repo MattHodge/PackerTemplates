@@ -152,17 +152,15 @@
                 "vagrantfile_template": "vagrantfile-windows.template"
             },
             {
-                "type": "atlas",
-                "artifact": "{{user `atlas_username`}}/{{user `full_os_name`}}-WMF5-NOCM",
-                "artifact_type": "vagrant.box",
-                "metadata": {
-                    "provider": "hyperv",
-                    "version": "{{user `atlas_version`}}"
-                }
+                "type": "vagrant-cloud",
+                "box_tag": "{{user `atlas_username`}}/{{user `full_os_name`}}-WMF5-NOCM",
+                "version": "{{user `atlas_version`}}",
+                "access_token": "{{user `atlas_token`}}"
             }
         ]
     ],
     "variables": {
+        "atlas_token": "{{env `ATLAS_TOKEN`}}",
         "atlas_username": "",
         "atlas_version": "",
         "guest_os_type": "",

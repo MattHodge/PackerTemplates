@@ -170,7 +170,7 @@ Task("hyperv-local")
 Task("hyperv-atlas")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/01-windows-atlas.json", hypervBuilderPath);
+    string jsonToBuild = String.Format("{0}/01-windows-vagrant-cloud.json", hypervBuilderPath);
     StartProcess("packer", RunPacker(installVBoxTools, OSES, "", jsonToBuild, atlas_username, atlas_version));
 });
 
