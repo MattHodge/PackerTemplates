@@ -154,7 +154,7 @@ Task("virtualbox-atlas")
   .IsDependentOn("virtualbox-03-cleanup")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/04-atlas.json", virtualBoxBuilderPath);
+    string jsonToBuild = String.Format("{0}/04-vagrant-cloud.json", virtualBoxBuilderPath);
     StartProcess("packer", RunPacker(installVBoxTools, OSES, "./output-{0}-cleanup/{0}-cleanup.ovf", jsonToBuild, atlas_username, atlas_version));
 });
 
