@@ -22,6 +22,7 @@
           "2"
         ]
       ],
+      "disk_size": 81920,
       "output_directory": "./output-{{ user `os_name` }}-base/",
       "vm_name": "{{ user `os_name` }}-base",
       "guest_additions_mode": "attach",
