@@ -39,7 +39,7 @@ The supported Operating Systems to build are:
 
 ### Pre-build Images
 
-If you just want to download the pre-build Vagrant images, download them from [HashiCorp Atlas](https://atlas.hashicorp.com/MattHodge/).
+If you just want to download the pre-build Vagrant images, download them from [Vagrant Cloud](https://app.vagrantup.com/MattHodge).
 
 ## Prepare your system to run Packer
 
