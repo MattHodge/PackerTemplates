@@ -189,7 +189,7 @@ if (!(Test-Path $CAKE_EXE)) {
 if ($Target -like 'hyperv*')
 {
     # check if hyper-v installed
-    $hyperv = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
+    $hyperv = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V -Online
 
     # Check if Hyper-V is already enabled.
     if($hyperv.State -ne "Enabled")
