@@ -45,6 +45,7 @@
         [
             {
                 "type": "vagrant",
+                "compression_level": 9,
                 "keep_input_artifact": false,
                 "output": "{{user `os_name`}}-wmf5-nocm-{{.Provider}}.box",
                 "vagrantfile_template": "vagrantfile-windows.template"
@@ -58,13 +59,13 @@
         ]
     ],
     "variables": {
-        "atlas_username": "",
-        "atlas_version": "",
+        "atlas_token": "{{env `ATLAS_TOKEN`}}",
+        "atlas_username": "{{env `ATLAS_USERNAME`}}",
+        "atlas_version": "{{env `ATLAS_VERSION`}}",
         "full_os_name": "",
         "headless": "true",
         "image_name": "atlas-upload",
         "os_name": "",
-        "source_path": "",
-        "atlas_token": "{{env `ATLAS_TOKEN`}}"
+        "source_path": ""
     }
 }

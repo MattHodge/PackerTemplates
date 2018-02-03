@@ -10,6 +10,7 @@
     - [Ubuntu](#ubuntu)
     - [Windows](#windows)
 - [Running the Build Script](#running-the-build-script)
+    - [Building Vagrant Cloud Images](#building-vagrant-cloud-images)
     - [Building Hyper-V Images](#building-hyper-v-images)
     - [Building VirtualBox Images](#building-virtualbox-images)
 - [Using the Vagrant Images](#using-the-vagrant-images)
@@ -32,7 +33,7 @@ The supported builds are:
 The `build.supported_os.yaml` file contains the list of Operating Systems that are supported and their settings.
 
 The supported Operating Systems to build are:
-* Win2012R2Core
+* Windows2012R2Core
 * Windows2012R2
 * Windows2016StdCore
 * Windows2016Std
@@ -93,6 +94,30 @@ Depending on your platform, you either need to run:
 * `build.ps1` on Windows
 * `build.sh` on Linux / MacOS.
 
+### Building Vagrant Cloud Images
+If you are building images for Vagrant Cloud, you need to set the following environment variables:
+
+```powershell
+# Windows
+
+$env:ATLAS_TOKEN = "ABC123XYZ"
+
+$env:ATLAS_USERNAME = "MattHodge" # Username to upload the boxes under
+
+$env:ATLAS_VERSION = "1.0.1" # Version of the box being uploaded
+```
+
+```bash
+# MacOS / Linux
+
+export ATLAS_TOKEN="ABC123XYZ"
+
+export ATLAS_USERNAME="MattHodge" # Username to upload the boxes under
+
+export ATLAS_VERSION="1.0.1" # Version of the box being uploaded
+```
+
+
 ### Building Hyper-V Images
 
 The following commands will build you Hyper-V Images
@@ -101,11 +126,8 @@ The following commands will build you Hyper-V Images
 # Builds Windows 2016 Standard Core and runs the Vagrant post processor (local).
 .\build.ps1 -Target "hyperv-local" -os="Windows2016StdCore"
 
-# Set your Atlas API Key
-$env:ATLAS_TOKEN = "123-MYATLAS-APIKEY"
-
 # Builds Windows 2012 R2 Core and runs the Atlas post processor.
-.\build.ps1 -Target "hyperv-atlas" --os="Win2012R2Core" --atlas_username="MattHodge" --atlas_version="1.0.0"
+.\build.ps1 -Target "hyperv-vagrant-cloud" --os="Win2012R2Core"
 ```
 
 ### Building VirtualBox Images
@@ -116,11 +138,8 @@ The following commands will build you VirtualBox Images
 # Builds Windows 2016 Standard Core and runs the Vagrant post processor (local).
 ./build.sh --target "virtualbox-local" -os="Windows2016StdCore"
 
-# Set your Atlas API Key
-export ATLAS_TOKEN="123-MYATLAS-APIKEY"
-
 # Builds Windows 2012 R2 Core and runs the Atlas post processor.
-./build.sh --target "virtualbox-atlas" -os="Win2012R2Core" --atlas_username="MattHodge" --atlas_version="1.0.0"
+./build.sh --target "virtualbox-vagrant-cloud" -os="Win2012R2Core"
 ```
 
 ## Using the Vagrant Images
@@ -131,4 +150,4 @@ If you aren't pushing your boxes to Atlas, you can import the `*.box` files for 
 vagrant box add .\win2016stdcore-wmf5-nocm-hyperv.box --name Windows2016StdCore
 ```
 
-You can also find all the boxes ready to be `vagrant up`ed over at my [VagrantBoxes Repository](https://github.com/MattHodge/VagrantBoxes).
+You can also find all the boxes ready to be used with `vagrant up` over at my [VagrantBoxes Repository](https://github.com/MattHodge/VagrantBoxes).
