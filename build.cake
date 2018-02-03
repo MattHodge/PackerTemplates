@@ -137,14 +137,14 @@ Task("virtualbox-vagrant-cloud")
 Task("hyperv-local")
   .Does(() =>
 {
-    string jsonToBuild = $"{virtualBoxBuilderPath}/01-windows-local.json";
+    string jsonToBuild = $"{hypervBuilderPath}/01-windows-local.json";
     StartProcess("packer", RunPacker(OSES, "", jsonToBuild));
 });
 
 Task("hyperv-vagrant-cloud")
   .Does(() =>
 {
-    string jsonToBuild = $"{virtualBoxBuilderPath}/01-windows-vagrant-cloud.json";
+    string jsonToBuild = $"{hypervBuilderPath}/01-windows-vagrant-cloud.json";
     StartProcess("packer", RunPacker(OSES, "", jsonToBuild));
 });
 
