@@ -19,7 +19,7 @@
             ],
             "cpu": 1,
             "disk_size": 81920,
-            "ram_size": 1024,
+            "ram_size": 4096,
             "generation": 1,
             "boot_wait": "0s",
             "boot_command": [
