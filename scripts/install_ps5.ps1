@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 if ($PSVersionTable.PSVersion.Major -le 4)
 {
   Write-Host "Installing Newer Version of PowerShell"

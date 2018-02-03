@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 Write-Output "Installing Virtualbox Guest Additions"
 Write-Output "Checking for Certificates in vBox ISO"
 if(test-path E:\ -Filter *.cer)

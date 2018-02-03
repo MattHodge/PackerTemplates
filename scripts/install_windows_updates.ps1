@@ -1,3 +1,5 @@
+$ErrorActionPreference = 'Stop'
+
 $wuInstallExe = Join-Path "$($env:windir)\SYSTEM32" 'WUInstallAMD64.exe'
 
 if (!(Test-Path -Path $wuInstallExe))
