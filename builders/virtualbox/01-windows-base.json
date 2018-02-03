@@ -48,10 +48,7 @@
       "type": "powershell",
       "script": "scripts/install_oracle_guest_additions.ps1",
       "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "environment_vars": [
-        "install_vbox_tools={{user `install_vbox_tools`}}"
-      ]
+      "elevated_password": "vagrant"
     }
   ],
   "variables": {
@@ -59,7 +56,6 @@
     "headless": "true",
     "iso_checksum": "",
     "iso_url": "",
-    "guest_os_type": "",
-    "install_vbox_tools": ""
+    "guest_os_type": ""
   }
 }

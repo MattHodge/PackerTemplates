@@ -16,9 +16,4 @@ Vagrant.configure(2) do |config|
     hv.ip_address_timeout = 240
     hv.memory = 2048
   end
-
-  config.vm.provider :libvirt do |domain|
-    domain.memory = 2028
-    domain.cpus = 2
-  end
 end

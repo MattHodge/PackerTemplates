@@ -1,28 +1,23 @@
+#addin "Cake.Incubator"
 #addin "Cake.Yaml"
 #addin "YamlDotNet"
-#addin "Newtonsoft.Json"
-var target = Argument("target", "virtualbox-local");
+
+// CLI Arguments For Cake Script
+var buildTarget = Argument("target", "virtualbox-local");
 var os = Argument("os","Windows2016StdCore");
-var atlas_username = Argument("atlas_username","MattHodge");
-var atlas_version = Argument("atlas_version","0.0.1");
-bool installVBoxTools = Argument<bool>("install_vbox_tools", true);
+
+// These need to be environment variables if doing a vagrant cloud build
+if (buildTarget.Contains("vagrant-cloud")) {
+  EnvironmentVariable<string>("ATLAS_TOKEN");
+  EnvironmentVariable<string>("ATLAS_USERNAME");
+  EnvironmentVariable<string>("ATLAS_VERSION");
+}
 
 string virtualBoxBuilderPath = "builders/virtualbox";
 string hypervBuilderPath = "builders/hyperv";
 
 // load build config yaml
 var OSES = LoadYAMLConfig("./build.supported_os.yaml", os);
-
-using Newtonsoft.Json;
-
-public void DebugPrint(object obj)
-{
-    if(obj == null)
-        Information("{0}", "obj is null");
-
-    var objAsJson = JsonConvert.SerializeObject(obj, Formatting.Indented);
-    Information("{0}", objAsJson);
-}
 
 public class OSToBuild
 {
@@ -50,13 +45,13 @@ public OSToBuild LoadYAMLConfig(string yaml_path, string os)
         }
         else
         {
-            string exceptionMsg = String.Format("Could not find a matching operating system in {0}. You passed in: {1}", yaml_path, os);
+            string exceptionMsg = $"Could not find a matching operating system in {yaml_path}. You passed in: {os}";
             throw new System.ArgumentException(exceptionMsg);
         }
     }
     catch
     {
-        throw new System.ArgumentException("Your yaml is invalid.");
+        throw new System.ArgumentException($"Your YAML file at {yaml_path} is invalid!");
     }
 }
 
@@ -72,19 +67,9 @@ public string GetPackerSourcePath(string os_name, string source_path)
     return source_path_var;
 }
 
-public ProcessSettings RunPacker(bool install_vbox_tools, OSToBuild os, string source_path, string json_file_path, string atlas_username, string atlas_version)
+public ProcessSettings RunPacker(OSToBuild os, string source_path, string json_file_path)
 {
-  string vbox_tools;
   string source_path_var;
-
-  if (install_vbox_tools)
-  {
-    vbox_tools = "True";
-  }
-  else
-  {
-    vbox_tools = "False";
-  }
 
   if (source_path != null)
   {
@@ -97,18 +82,7 @@ public ProcessSettings RunPacker(bool install_vbox_tools, OSToBuild os, string s
     source_path_var = "";
   }
 
-  string packer_cmd = String.Format("-var \"install_vbox_tools={0}\" -var \"os_name={1}\" -var \"iso_checksum={2}\" -var \"iso_url={3}\" -var \"guest_os_type={4}\" -var \"full_os_name={5}\" -var \"atlas_username={6}\" -var \"atlas_version={7}\" {8} {9}",
-    vbox_tools,
-    os.osName,
-    os.isoChecksum,
-    os.isoURL,
-    os.guestOSType,
-    os.Name,
-    atlas_username,
-    atlas_version,
-    source_path_var,
-    json_file_path
-  );
+  string packer_cmd = $"-var \"os_name={os.osName}\" -var \"iso_checksum={os.isoChecksum}\" -var \"iso_url={os.isoURL}\" -var \"guest_os_type={os.guestOSType}\" -var \"full_os_name={os.Name}\" {source_path_var} {json_file_path}";
 
   Information(packer_cmd);
 
@@ -123,55 +97,55 @@ public ProcessSettings RunPacker(bool install_vbox_tools, OSToBuild os, string s
 Task("virtualbox-01-windows-base")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/01-windows-base.json", virtualBoxBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/01-windows-base.json";
+    StartProcess("packer", RunPacker(OSES, "", jsonToBuild));
 });
 
 Task("virtualbox-02-win_updates-wmf5")
   .IsDependentOn("virtualbox-01-windows-base")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/02-win_updates-wmf5.json", virtualBoxBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "./output-{0}-base/{0}-base.ovf", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/02-win_updates-wmf5.json";
+    StartProcess("packer", RunPacker(OSES, "./output-{0}-base/{0}-base.ovf", jsonToBuild));
 });
 
 Task("virtualbox-03-cleanup")
   .IsDependentOn("virtualbox-02-win_updates-wmf5")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/03-cleanup.json", virtualBoxBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "./output-{0}-updates_wmf5/{0}-updates_wmf5.ovf", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/03-cleanup.json";
+    StartProcess("packer", RunPacker(OSES, "./output-{0}-updates_wmf5/{0}-updates_wmf5.ovf", jsonToBuild));
 });
 
 Task("virtualbox-local")
   .IsDependentOn("virtualbox-03-cleanup")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/04-local.json", virtualBoxBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "./output-{0}-cleanup/{0}-cleanup.ovf", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/04-local.json";
+    StartProcess("packer", RunPacker(OSES, "./output-{0}-cleanup/{0}-cleanup.ovf", jsonToBuild));
 });
 
-Task("virtualbox-atlas")
+Task("virtualbox-vagrant-cloud")
   .IsDependentOn("virtualbox-03-cleanup")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/04-vagrant-cloud.json", virtualBoxBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "./output-{0}-cleanup/{0}-cleanup.ovf", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/04-vagrant-cloud.json";
+    StartProcess("packer", RunPacker(OSES, "./output-{0}-cleanup/{0}-cleanup.ovf", jsonToBuild));
 });
 
 // Hyper-V Tasks
 Task("hyperv-local")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/01-windows-local.json", hypervBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/01-windows-local.json";
+    StartProcess("packer", RunPacker(OSES, "", jsonToBuild));
 });
 
-Task("hyperv-atlas")
+Task("hyperv-vagrant-cloud")
   .Does(() =>
 {
-    string jsonToBuild = String.Format("{0}/01-windows-vagrant-cloud.json", hypervBuilderPath);
-    StartProcess("packer", RunPacker(installVBoxTools, OSES, "", jsonToBuild, atlas_username, atlas_version));
+    string jsonToBuild = $"{virtualBoxBuilderPath}/01-windows-vagrant-cloud.json";
+    StartProcess("packer", RunPacker(OSES, "", jsonToBuild));
 });
 
-RunTarget(target);
+RunTarget(buildTarget);

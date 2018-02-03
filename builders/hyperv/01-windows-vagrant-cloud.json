@@ -147,6 +147,7 @@
         [
             {
                 "type": "vagrant",
+                "compression_level": 9,
                 "keep_input_artifact": false,
                 "output": "{{user `os_name`}}-wmf5-nocm-{{.Provider}}.box",
                 "vagrantfile_template": "vagrantfile-windows.template"
@@ -161,8 +162,8 @@
     ],
     "variables": {
         "atlas_token": "{{env `ATLAS_TOKEN`}}",
-        "atlas_username": "",
-        "atlas_version": "",
+        "atlas_username": "{{env `ATLAS_USERNAME`}}",
+        "atlas_version": "{{env `ATLAS_VERSION`}}",
         "iso_checksum": "",
         "iso_url": "",
         "os_name": ""
