@@ -85,7 +85,11 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 # Create an external Hyper-V Switch
 # Commands may vary depending on your system.
 Get-NetAdapter
-New-VMSwitch -Name "External VM Switch" -AllowManagementOS $true -NetAdapterName "Ethernet"
+
+# Find the name of the network adapter (make sure its status is also not disconnected)
+
+# Create a new VM Switch using the name of the network adapter
+New-VMSwitch -Name "External VM Switch" -AllowManagementOS $true -NetAdapterName "<Your Adapter Name Here>"
 ```
 
 ## Running the Build Script
