@@ -93,6 +93,27 @@ public ProcessSettings RunPacker(OSToBuild os, string source_path, string json_f
   return settings;
 }
 
+// Clean
+Task("clean")
+  .Does(() =>
+{
+    var directoriesToClean = GetDirectories("./output-*/**");
+
+    var deleteSettings = new DeleteDirectorySettings {
+      Recursive = true,
+      Force = true,
+    };
+
+    foreach (var directory in directoriesToClean)
+    {
+        if (DirectoryExists(directory))
+        {
+            DeleteDirectory(directory, deleteSettings);
+            Information($"Deleted directory {directory}.");
+        }
+    }
+});
+
 // VirtualBox Tasks
 Task("virtualbox-01-windows-base")
   .Does(() =>
