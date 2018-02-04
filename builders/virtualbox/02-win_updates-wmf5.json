@@ -38,10 +38,7 @@
     "provisioners": [
         {
             "type": "powershell",
-            "inline": [
-                "$env:chocolateyUseWindowsCompression = 'false'",
-                "iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex"
-            ],
+            "script": "scripts/install_chocolatey.ps1",
             "elevated_user": "vagrant",
             "elevated_password": "vagrant"
         },
@@ -123,6 +120,26 @@
             "elevated_password": "vagrant",
             "valid_exit_codes": [
                 0,
+                1,
+                2,
+                3,
+                5,
+                10,
+                15
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "restart_timeout": "1h"
+        },
+        {
+            "type": "powershell",
+            "script": "scripts/install_windows_updates.ps1",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1,
                 2,
                 3,
                 5,
